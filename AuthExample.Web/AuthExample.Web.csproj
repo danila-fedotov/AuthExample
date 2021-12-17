@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuthExample.Auth\AuthExample.Auth.csproj" />
     <ProjectReference Include="..\AuthExample.Fias\AuthExample.Fias.csproj" />
   </ItemGroup>
 
