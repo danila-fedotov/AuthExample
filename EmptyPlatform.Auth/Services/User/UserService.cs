@@ -17,7 +17,7 @@ namespace EmptyPlatform.Auth.Services
             _dbRepository = dbRepository;
         }
 
-        public void Create(User user, string actionNote = null)
+        public void Create(User user, string actionNote)
         {
             var hasId = !string.IsNullOrEmpty(user.Id);
 
@@ -33,7 +33,7 @@ namespace EmptyPlatform.Auth.Services
 
             user.Id = Guid.NewGuid().ToString();
 
-            _dbRepository.Create(user, actionNote);
+            _dbRepository.CreateUser(user, actionNote);
 
             // TODO: form link
         }
@@ -45,9 +45,16 @@ namespace EmptyPlatform.Auth.Services
             return users;
         }
 
-        public virtual User Get(string id)
+        public virtual User Get(string userId)
         {
-            var user = _dbRepository.GetUser(id);
+            var user = _dbRepository.GetUserById(userId);
+
+            if (user is not null)
+            {
+                var roles = _dbRepository.GetRolesByUserId(userId);
+
+                user.Roles = roles;
+            }
 
             return user;
         }
@@ -59,13 +66,13 @@ namespace EmptyPlatform.Auth.Services
             return user;
         }
 
-        public virtual void Update(User user, string actionNote = null)
+        public virtual void Update(User user, string actionNote)
         {
             var actualUser = Get(user.Id);
 
             if (user != actualUser)
             {
-                _dbRepository.Update(user, actionNote);
+                _dbRepository.UpdateUser(user, actionNote);
             }
         }
 
@@ -76,7 +83,7 @@ namespace EmptyPlatform.Auth.Services
 
         public virtual bool MatchPassword(User user, string password)
         {
-            var currentPassword = _dbRepository.GetHashPassword(user.Id);
+            var currentPassword = _dbRepository.GetPassword(user.Id);
             var isMatch = currentPassword == password;
 
             return isMatch;

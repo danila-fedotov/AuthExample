@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmptyPlatform.Auth.Api
+namespace EmptyPlatform.Auth.Api.User
 {
-    public class RemoveDto
+    public class RemoveRequest
     {
         [Required]
         public string UserId { get; set; }

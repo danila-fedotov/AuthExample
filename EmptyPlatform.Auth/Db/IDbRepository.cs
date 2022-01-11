@@ -1,23 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace EmptyPlatform.Auth.Db
 {
-    internal interface IDbRepository
+    internal interface IDbRepository : IDisposable
     {
-        void Create(User user, string actionNote);
+        int CreateSession(string userId, string device, string address);
 
-        List<User> GetUsers();
+        string GetUserIdBySessionId(int sessionId);
 
-        User GetUser(string id);
+        void CloseSession(int sessionId);
+
+        void CloseSessions(string userId);
+
+        void CloseSessions();
+
+        void CreateUser(User user, string actionNote);
+
+        User GetUserById(string userId);
 
         User GetUserByEmail(string email);
 
-        string GetHashPassword(string userId);
+        List<User> GetUsers();
 
-        void Update(User user, string actionNote);
+        void UpdateUser(User user, string actionNote);
 
-        void ChangePassword(string userId, string password, string actionNote);
+        void RemoveUser(string userId, string actionNote);
 
-        void RemoveUser(string id, string actionNote);
+        void CreatePassword(string userId, string password, string actionNote);
+
+        string GetPassword(string userId);
+
+        void UpdatePassword(string userId, string password, string actionNote);
+
+        void RemovePassword(string userId, string actionNote);
+
+        List<Role> GetRolesByUserId(string userId);
     }
 }

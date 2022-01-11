@@ -1,10 +1,6 @@
 ﻿using EmptyPlatform.Auth.Db;
 using EmptyPlatform.Auth.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
 
 namespace EmptyPlatform.Auth
 {
@@ -12,20 +8,17 @@ namespace EmptyPlatform.Auth
     {
         public static IServiceCollection AddAuth(this IServiceCollection services)
         {
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.ExpireTimeSpan = new TimeSpan(0, 10, 0);
-                    options.Events.OnRedirectToLogin = (context) =>
-                    {
-                        context.Response.StatusCode = 401;
+            //var aa = Assembly
+            //   .GetEntryAssembly()
+            //   .GetReferencedAssemblies()
+            //   .Select(Assembly.Load)
+            //   .SelectMany(x => x.DefinedTypes)
+            //   .SelectMany(x => x.GetMembers());
+            //var a = aa
+            //   .Where(x => x.GetCustomAttributes<AuthorizeAttribute>().Any());
 
-                        return Task.CompletedTask;
-                    };
-                });
-            services.AddAuthorizationCore();
-
-            services.AddTransient<IDbRepository, DbRepository>();
+            services.AddSingleton<ISessionService, SessionService>();
+            services.AddScoped<IDbRepository, DbRepository>();
             services.AddTransient<IUserService, UserService>();
 
             return services;

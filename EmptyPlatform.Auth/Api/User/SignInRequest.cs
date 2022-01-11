@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmptyPlatform.Auth.Api
+namespace EmptyPlatform.Auth.Api.User
 {
-    public class SignInDto
+    public class SignInRequest
     {
         [Required]
         [EmailAddress]

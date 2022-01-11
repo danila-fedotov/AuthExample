@@ -1,4 +1,5 @@
 using EmptyPlatform.Auth;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Data;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace EmptyPlatform.Web
 {
@@ -33,8 +36,36 @@ namespace EmptyPlatform.Web
             });
             services.AddControllers(configure =>
             {
-                configure.Filters.Add<ValidationFilter>(0);
+                configure.Filters.Add<AuthorizationFilter>();
+                configure.Filters.Add<ValidationFilter>();
             });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    /*
+Content-Security-Policy – ограничение доверенных доменов для предотвращения возможных XSS атак
+Заголовок X-Frame-Options для защиты от атак типа clickjacking.
+X-XSS-Protection – принудительно включить встроенный механизм защиты браузера от XSS атак.
+X-Content-Type-Options – для защиты от подмены MIME типов.
+                     */
+                    options.Cookie.HttpOnly = true;
+                    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Strict;
+                    options.Cookie.IsEssential = true;
+                    options.ExpireTimeSpan = new TimeSpan(0, 10, 0);
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                        return Task.CompletedTask;
+                    };
+                    options.Events.OnRedirectToAccessDenied = (context) =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+
+                        return Task.CompletedTask;
+                    };
+                });
             services.AddAuth();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

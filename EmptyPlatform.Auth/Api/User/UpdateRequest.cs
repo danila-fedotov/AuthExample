@@ -1,10 +1,9 @@
-﻿using EmptyPlatform.Auth.Db;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace EmptyPlatform.Auth.Api
+namespace EmptyPlatform.Auth.Api.User
 {
-    public class UserDto
+    public class UpdateRequest
     {
         public string Id { get; set; }
 
@@ -23,22 +22,15 @@ namespace EmptyPlatform.Auth.Api
         [Required]
         public DateTime Birthday { get; set; }
 
-        public User Map() => new()
+        public string ActionNote { get; set; }
+
+        public Db.User Map() => new()
         {
             Id = Id,
             Email = Email,
             FirstName = FirstName,
             SecondName = SecondName,
             Birthday = Birthday
-        };
-
-        public static UserDto Map(User user) => new()
-        {
-            Id = user.Id,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            SecondName = user.SecondName,
-            Birthday = user.Birthday
         };
     }
 }
