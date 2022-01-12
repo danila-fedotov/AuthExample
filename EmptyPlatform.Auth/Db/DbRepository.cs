@@ -279,7 +279,7 @@ VALUES
 
             _dbConnection.Execute(sql, new
             {
-                role.Id,
+                role.RoleId,
                 role.Name,
                 actionNote,
                 CreatedDate = DateTime.UtcNow,
@@ -292,8 +292,8 @@ VALUES
             var sql = @"
 SELECT r.*, rp.PermissionsAsJson
 FROM Role r
-LEFT JOIN RolePermission rp ON rp.RoleId=r.Id and rp._IsActive=1
-WHERE Id=@roleId AND _IsActive=1";
+LEFT JOIN RolePermission rp ON rp.RoleId=r.RoleId and rp.IsActive=1
+WHERE r.RoleId=@roleId AND r.IsActive=1";
             var role = _dbConnection.Query<Role>(sql, new { roleId }).FirstOrDefault();
 
             return role;
@@ -314,7 +314,8 @@ WHERE ur.UserId=@userId and ur.ClosedDate is null";
 
         public virtual List<Role> GetRoles()
         {
-            var roles = _dbConnection.Query<Role>("SELECT * FROM Role WHERE _IsActive=1").ToList();
+            var sql = "SELECT * FROM Role WHERE IsActive=1";
+            var roles = _dbConnection.Query<Role>(sql).ToList();
 
             return roles;
         }
@@ -324,17 +325,17 @@ WHERE ur.UserId=@userId and ur.ClosedDate is null";
             var sql = @"
 BEGIN TRANSACTION;
 
-UPDATE Role SET _IsActive=0 WHERE Id=@Id AND _IsActive=1;
+UPDATE Role SET IsActive=0 WHERE RoleId=@RoleId AND IsActive=1;
 
-INSERT INTO Role (Id, Name, _IsActive, _ActionNote, _CreatedDate, _CreatedByUserId)
+INSERT INTO Role (RoleId, Name, IsActive, ActionNote, CreatedDate, CreatedByUserId)
 VALUES
-(@Id, @Name, 1, @actionNote, @CreatedDate, @CreatedByUserId);
+(@RoleId, @Name, 1, @actionNote, @CreatedDate, @CreatedByUserId);
 
 COMMIT;";
 
             _dbConnection.Execute(sql, new
             {
-                role.Id,
+                role.RoleId,
                 role.Name,
                 actionNote,
                 CreatedDate = DateTime.UtcNow,
@@ -347,9 +348,9 @@ COMMIT;";
             var sql = @"
 BEGIN TRANSACTION;
 
-UPDATE RolePermission SET _IsActive=0 WHERE RoleId=@Id AND _IsActive=1;
+UPDATE RolePermission SET IsActive=0 WHERE RoleId=@roleId AND IsActive=1;
 
-INSERT INTO RolePermission (RoleId, PermissionsAsJson, _IsActive, _ActionNote, _CreatedDate, _CreatedByUserId)
+INSERT INTO RolePermission (RoleId, PermissionsAsJson, IsActive, ActionNote, CreatedDate, CreatedByUserId)
 VALUES
 (@roleId, @permissionsAsJson, 1, @actionNote, @CreatedDate, @CreatedByUserId);
 

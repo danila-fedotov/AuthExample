@@ -15,7 +15,7 @@ namespace EmptyPlatform.Auth.Services
 
         public virtual Role Get(string roleId)
         {
-            var role = _dbRepository.GetRoleById(roleId);
+            var role = _dbRepository.GetRoleById(roleId) ?? throw new ArgumentNullException("RoleId", "Role is not found");
 
             return role;
         }
@@ -29,7 +29,7 @@ namespace EmptyPlatform.Auth.Services
 
         public virtual void Update(Role role, string actionNote)
         {
-            var actualRole = Get(role.Id) ?? throw new ArgumentNullException("RoleId", "Role is not found");
+            var actualRole = Get(role.RoleId);
 
             if (actualRole.Name != role.Name)
             {
@@ -38,7 +38,7 @@ namespace EmptyPlatform.Auth.Services
 
             if (actualRole.PermissionsAsJson != role.PermissionsAsJson)
             {
-                _dbRepository.UpdateRolePermissions(role.Id, role.PermissionsAsJson, actionNote);
+                _dbRepository.UpdateRolePermissions(role.RoleId, role.PermissionsAsJson, actionNote);
             }
         }
     }

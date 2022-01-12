@@ -4,7 +4,7 @@ namespace EmptyPlatform.Auth.Api.Role
 {
     public class RoleResponse
     {
-        public string Id { get; set; }
+        public string RoleId { get; set; }
 
         public string Name { get; set; }
 
@@ -12,7 +12,7 @@ namespace EmptyPlatform.Auth.Api.Role
 
         public static RoleResponse Map(Db.Role role) => new()
         {
-            Id = role.Id,
+            RoleId = role.RoleId,
             Name = role.Name,
             Permissions = role.Permissions
         };

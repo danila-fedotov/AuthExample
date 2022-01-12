@@ -66,6 +66,12 @@ X-Content-Type-Options Ц дл€ защиты от подмены MIME типов.
                         return Task.CompletedTask;
                     };
                 });
+            services.AddSwaggerGen(options =>
+            {
+                // TODO: add filter by permission
+                // TODO: add display descriptions
+                options.CustomSchemaIds(type => type.FullName);
+            });
             services.AddAuth();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -84,6 +90,8 @@ X-Content-Type-Options Ц дл€ защиты от подмены MIME типов.
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

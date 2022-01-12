@@ -5,6 +5,7 @@ namespace EmptyPlatform.Auth.Api.Role
 {
     public class UpdateRequest
     {
+        [Required]
         public string RoleId { get; set; }
 
         [Required]
@@ -16,9 +17,9 @@ namespace EmptyPlatform.Auth.Api.Role
 
         public string ActionNote { get; set; }
 
-        public Db.Role Map() => new()
+        public virtual Db.Role Map() => new()
         {
-            Id = RoleId,
+            RoleId = RoleId,
             Name = Name,
             Permissions = Permissions
         };

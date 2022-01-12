@@ -5,7 +5,7 @@ namespace EmptyPlatform.Auth.Db
 {
     public class Role
     {
-        public string Id { get; set; }
+        public string RoleId { get; set; }
 
         public string Name { get; set; }
 

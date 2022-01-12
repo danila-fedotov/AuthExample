@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EmptyPlatform.Auth\EmptyPlatform.Auth.csproj" />
     <ProjectReference Include="..\EmptyPlatform.Fias\EmptyPlatform.Fias.csproj" />
   </ItemGroup>

@@ -92,8 +92,8 @@ INSERT INTO [RolePermission]
 ([RoleId],[PermissionsAsJson],[IsActive],[CreatedDate],[CreatedByUserId])
 VALUES
 ('0595bd21-8f81-49dc-bd3a-6f1de096e555','{
-   "user",
-   "role"
+   "user": [],
+   "role": []
 }',1,datetime(),'root');
 
 INSERT INTO [UserRole]
