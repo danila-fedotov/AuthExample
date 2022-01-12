@@ -44,7 +44,7 @@ namespace EmptyPlatform.Auth
                 }
 
                 var user = _userService.Get(userId);
-                var isValidSession = user is not null && ValidateSession(context, userId);
+                var isValidSession = user is not null && ValidateSession(context);
 
                 if (!isValidSession)
                 {
@@ -69,13 +69,45 @@ namespace EmptyPlatform.Auth
             }
         }
 
-        protected virtual bool ValidateSession(AuthorizationFilterContext context, string userId)
+        protected virtual bool ValidateSession(AuthorizationFilterContext context)
         {
             var sessionValue = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Authentication);
             var sessionId = sessionValue is null ? 0 : Convert.ToInt32(sessionValue.Value);
-            var hasSession = sessionId > 0 && _sessionService.Has(userId, sessionId);
 
-            return hasSession;
+            if (sessionId == 0)
+            {
+                return false;
+            }
+
+            var session = _sessionService.Get(sessionId);
+
+            if (session is null)
+            {
+                return false;
+            }
+
+            var userId = context.HttpContext.User.Identity.Name;
+
+            if (session.UserId != userId)
+            {
+                // TODO: log
+                _sessionService.Close(userId);
+                _sessionService.Close(session.UserId);
+
+                return false;
+            }
+
+            var device = context.HttpContext.Request.Headers["User-Agent"].ToString();
+
+            if (session.Device != device)
+            {
+                // TODO: log
+                _sessionService.Close(session.SessionId);
+
+                return false;
+            }
+
+            return true;
         }
 
         protected virtual bool ValidatePermissions(AuthorizationFilterContext context, User user)
@@ -83,10 +115,22 @@ namespace EmptyPlatform.Auth
             try
             {
                 var controllerName = context.RouteData.Values["controller"].ToString().ToLower();
-                var actionName = context.RouteData.Values["action"].ToString().ToLower();
-                var hasPermission = user.Permissions.TryGetValue(controllerName, out string[] methods) && methods.Contains(actionName);
+                var isAccountController = controllerName == "account";
+                
+                if (isAccountController)
+                {
+                    return true;
+                }
 
-                return hasPermission;
+                var actionName = context.RouteData.Values["action"].ToString().ToLower();
+                var hasAccessToController = user.Permissions.TryGetValue(controllerName, out string[] actions);
+
+                if (!hasAccessToController)
+                {
+                    return false;
+                }
+
+                return !actions.Any() || actions.Contains(actionName);
             }
             catch (Exception ex)
             {

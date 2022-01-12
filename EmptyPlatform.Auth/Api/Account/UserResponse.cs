@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EmptyPlatform.Auth.Api.User
+namespace EmptyPlatform.Auth.Api.Account
 {
     public class UserResponse
     {

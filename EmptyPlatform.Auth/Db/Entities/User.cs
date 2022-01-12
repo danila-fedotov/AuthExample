@@ -6,7 +6,7 @@ namespace EmptyPlatform.Auth.Db
 {
     public class User
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         public string Email { get; set; }
 
@@ -25,7 +25,7 @@ namespace EmptyPlatform.Auth.Db
                 return false;
             }
 
-            var isEqual = Id == anotherUser.Id
+            var isEqual = UserId == anotherUser.UserId
                 && Email == anotherUser.Email
                 && FirstName == anotherUser.FirstName
                 && SecondName == anotherUser.SecondName
@@ -36,13 +36,14 @@ namespace EmptyPlatform.Auth.Db
 
         public override int GetHashCode()
         {
-            var hash = HashCode.Combine(Id, Email);
+            var hash = HashCode.Combine(UserId, Email);
 
             return hash;
         }
 
         public string FullName => $"{FirstName} {SecondName}";
 
-        public Dictionary<string, string[]> Permissions => Roles.First().Permissions;
+        // todo: merge permissions
+        public Dictionary<string, string[]> Permissions => Roles?.First().Permissions ?? new();
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmptyPlatform.Auth.Api.User
+namespace EmptyPlatform.Auth.Api.Account
 {
     public class SignInRequest
     {

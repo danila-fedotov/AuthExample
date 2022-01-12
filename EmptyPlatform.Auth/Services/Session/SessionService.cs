@@ -1,4 +1,5 @@
 ﻿using EmptyPlatform.Auth.Db;
+using EmptyPlatform.Auth.Db.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,28 +23,21 @@ namespace EmptyPlatform.Auth.Services
             return sessionId;
         }
 
-        public virtual void Close(string userId)
+        public virtual Session Get(int sessionId)
         {
-            DbRepository.CloseSessions(userId);
+            var session = DbRepository.GetSessionById(sessionId);
+
+            return session;
         }
 
-        public virtual void Close(string userId, int sessionId)
+        public virtual void Close(int sessionId)
         {
             DbRepository.CloseSession(sessionId);
         }
 
-        public virtual bool Has(string userId, int sessionId)
+        public virtual void Close(string userId)
         {
-            var actualUserId = DbRepository.GetUserIdBySessionId(sessionId);
-
-            if (string.IsNullOrEmpty(actualUserId))
-            {
-                return false;
-            }
-
-            var isSameUser = actualUserId == userId;
-
-            return isSameUser;
+            DbRepository.CloseSessions(userId);
         }
     }
 }

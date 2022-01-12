@@ -19,23 +19,28 @@ namespace EmptyPlatform.Auth.Services
 
         public void Create(User user, string actionNote)
         {
-            var hasId = !string.IsNullOrEmpty(user.Id);
-
-            if (hasId)
-            {
-                var actualUser = Get(user.Id);
-
-                if (actualUser is not null)
-                {
-                    throw new ApplicationException($"User already created");
-                }
-            }
-
-            user.Id = Guid.NewGuid().ToString();
+            user.UserId = Guid.NewGuid().ToString();
 
             _dbRepository.CreateUser(user, actionNote);
 
             // TODO: form link
+        }
+
+        public virtual User Get(string userId)
+        {
+            var user = _dbRepository.GetUserById(userId) ?? throw new ArgumentNullException("UserId", "User is not found");
+            var roles = _dbRepository.GetRolesByUserId(userId);
+
+            user.Roles = roles;
+
+            return user;
+        }
+
+        public virtual User GetByEmail(string email)
+        {
+            var user = _dbRepository.GetUserByEmail(email) ?? throw new ArgumentNullException("Email", "User is not found");
+
+            return user;
         }
 
         public virtual List<User> Get()
@@ -45,48 +50,29 @@ namespace EmptyPlatform.Auth.Services
             return users;
         }
 
-        public virtual User Get(string userId)
-        {
-            var user = _dbRepository.GetUserById(userId);
-
-            if (user is not null)
-            {
-                var roles = _dbRepository.GetRolesByUserId(userId);
-
-                user.Roles = roles;
-            }
-
-            return user;
-        }
-
-        public virtual User GetByEmail(string email)
-        {
-            var user = _dbRepository.GetUserByEmail(email);
-
-            return user;
-        }
-
         public virtual void Update(User user, string actionNote)
         {
-            var actualUser = Get(user.Id);
+            var actualUser = Get(user.UserId);
 
-            if (user != actualUser)
+            if (!actualUser.Equals(user))
             {
                 _dbRepository.UpdateUser(user, actionNote);
             }
+
+            // TODO: email change
         }
 
-        public virtual void Remove(User user, string actionNote)
+        public virtual void Remove(string userId, string actionNote)
         {
-            _dbRepository.RemoveUser(user.Id, actionNote);
+            _dbRepository.RemoveUser(userId, actionNote);
         }
 
-        public virtual bool MatchPassword(User user, string password)
+        public virtual bool MatchPassword(string userId, string password)
         {
-            var currentPassword = _dbRepository.GetPassword(user.Id);
-            var isMatch = currentPassword == password;
+            var actualPassword = _dbRepository.GetPassword(userId);
+            var isMatched = actualPassword == password;
 
-            return isMatch;
+            return isMatched;
         }
     }
 }

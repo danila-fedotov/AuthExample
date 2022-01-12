@@ -7,16 +7,16 @@ namespace EmptyPlatform.Auth.Services
     {
         void Create(User user, string actionNote);
 
-        List<User> Get();
-
-        User Get(string id);
+        User Get(string userId);
 
         User GetByEmail(string email);
 
-        void Update(User user, string actionNote = null);
+        List<User> Get();
 
-        void Remove(User user, string actionNote);
+        void Update(User user, string actionNote);
 
-        bool MatchPassword(User user, string password);
+        void Remove(string userId, string actionNote);
+
+        bool MatchPassword(string userId, string password);
     }
 }

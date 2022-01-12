@@ -11,6 +11,10 @@ namespace EmptyPlatform.Auth.Db
 
         public string PermissionsAsJson { get; set; }
 
-        public Dictionary<string, string[]> Permissions => JsonConvert.DeserializeObject<Dictionary<string, string[]>>(PermissionsAsJson);
+        public Dictionary<string, string[]> Permissions
+        {
+            get => JsonConvert.DeserializeObject<Dictionary<string, string[]>>(PermissionsAsJson ?? string.Empty);
+            set => PermissionsAsJson = JsonConvert.SerializeObject(value ?? new());
+        }
     }
 }

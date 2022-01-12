@@ -7,6 +7,7 @@ namespace EmptyPlatform.Web
     {
         public void OnActionExecuted(ActionExecutedContext context)
         {
+            // TODO: log error
         }
 
         public void OnActionExecuting(ActionExecutingContext context)

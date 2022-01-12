@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmptyPlatform.Auth.Db.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace EmptyPlatform.Auth.Db
@@ -7,7 +8,7 @@ namespace EmptyPlatform.Auth.Db
     {
         int CreateSession(string userId, string device, string address);
 
-        string GetUserIdBySessionId(int sessionId);
+        Session GetSessionById(int sessionId);
 
         void CloseSession(int sessionId);
 
@@ -20,6 +21,8 @@ namespace EmptyPlatform.Auth.Db
         User GetUserById(string userId);
 
         User GetUserByEmail(string email);
+
+        List<User> GetUsersByRoleId(string roleId);
 
         List<User> GetUsers();
 
@@ -35,6 +38,14 @@ namespace EmptyPlatform.Auth.Db
 
         void RemovePassword(string userId, string actionNote);
 
+        Role GetRoleById(string roleId);
+
         List<Role> GetRolesByUserId(string userId);
+
+        List<Role> GetRoles();
+
+        void UpdateRole(Role role, string actionNote);
+
+        void UpdateRolePermissions(string roleId, string permissionsAsJson, string actionNote);
     }
 }

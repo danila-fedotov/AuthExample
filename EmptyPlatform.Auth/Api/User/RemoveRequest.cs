@@ -7,7 +7,6 @@ namespace EmptyPlatform.Auth.Api.User
         [Required]
         public string UserId { get; set; }
 
-        [Required]
         public string ActionNote { get; set; }
     }
 }
