@@ -18,5 +18,7 @@ namespace EmptyPlatform.Auth.Services
         void Remove(string userId, string actionNote);
 
         bool MatchPassword(string userId, string password);
+
+        bool ValidateAccess(Dictionary<string, string[]> Permissions, string controllerName, string actionName);
     }
 }

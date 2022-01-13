@@ -1,6 +1,7 @@
 ﻿using EmptyPlatform.Auth.Db;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EmptyPlatform.Auth.Services
 {
@@ -73,6 +74,36 @@ namespace EmptyPlatform.Auth.Services
             var isMatched = actualPassword == password;
 
             return isMatched;
+        }
+
+        public virtual bool ValidateAccess(Dictionary<string, string[]> Permissions, string controllerName, string actionName)
+        {
+            try
+            {
+                var isAccountController = controllerName == "account";
+
+                if (isAccountController)
+                {
+                    return true;
+                }
+
+                var hasAccessToController = Permissions.TryGetValue(controllerName, out string[] actions);
+
+                if (!hasAccessToController)
+                {
+                    return false;
+                }
+
+                var hasAccessToAllActions = !actions.Any();
+                var hasAccessToAction = hasAccessToAllActions || actions.Contains(actionName);
+
+                return hasAccessToAction;
+            }
+            catch (Exception ex)
+            {
+                // TODO: log
+                return false;
+            }
         }
     }
 }

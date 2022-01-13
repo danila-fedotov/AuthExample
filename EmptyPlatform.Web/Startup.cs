@@ -68,8 +68,9 @@ X-Content-Type-Options Ц дл€ защиты от подмены MIME типов.
                 });
             services.AddSwaggerGen(options =>
             {
-                // TODO: add filter by permission
+                // TODO: schema filter by permission
                 // TODO: add display descriptions
+                options.DocumentFilter<SwaggerDocumentFilter>();
                 options.CustomSchemaIds(type => type.FullName);
             });
             services.AddAuth();

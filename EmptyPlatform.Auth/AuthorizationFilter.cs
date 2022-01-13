@@ -1,5 +1,4 @@
-﻿using EmptyPlatform.Auth.Db;
-using EmptyPlatform.Auth.Services;
+﻿using EmptyPlatform.Auth.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -53,9 +52,11 @@ namespace EmptyPlatform.Auth
                     return;
                 }
 
-                var isValidPermissions = ValidatePermissions(context, user);
+                var controllerName = context.RouteData.Values["controller"].ToString().ToLower();
+                var actionName = context.RouteData.Values["action"].ToString().ToLower();
+                var hasAccess = _userService.ValidateAccess(user.Permissions, controllerName, actionName);
 
-                if (!isValidPermissions)
+                if (!hasAccess)
                 {
                     context.Result = new ForbidResult();
                     return;
@@ -108,35 +109,6 @@ namespace EmptyPlatform.Auth
             }
 
             return true;
-        }
-
-        protected virtual bool ValidatePermissions(AuthorizationFilterContext context, User user)
-        {
-            try
-            {
-                var controllerName = context.RouteData.Values["controller"].ToString().ToLower();
-                var isAccountController = controllerName == "account";
-                
-                if (isAccountController)
-                {
-                    return true;
-                }
-
-                var actionName = context.RouteData.Values["action"].ToString().ToLower();
-                var hasAccessToController = user.Permissions.TryGetValue(controllerName, out string[] actions);
-
-                if (!hasAccessToController)
-                {
-                    return false;
-                }
-
-                return !actions.Any() || actions.Contains(actionName);
-            }
-            catch (Exception ex)
-            {
-                // TODO: log
-                return false;
-            }
         }
     }
 }

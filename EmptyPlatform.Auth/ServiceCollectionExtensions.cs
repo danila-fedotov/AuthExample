@@ -9,7 +9,7 @@ namespace EmptyPlatform.Auth
         public static IServiceCollection AddAuth(this IServiceCollection services)
         {
             services.AddSingleton<ISessionService, SessionService>();
-            services.AddScoped<IDbRepository, DbRepository>();
+            services.AddTransient<IDbRepository, DbRepository>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
 
