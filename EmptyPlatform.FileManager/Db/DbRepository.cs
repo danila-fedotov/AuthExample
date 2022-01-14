@@ -65,16 +65,12 @@ VALUES
             return file;
         }
 
-        public void ForceRemoveFile(string fileId)
+        public virtual void RemoveFile(string fileId)
         {
-            var sql = "DELETE FROM File WHERE FileId=@fileId";
-
-            _dbConnection.Execute(sql, new { fileId });
-        }
-
-        public void RemoveFile(string fileId)
-        {
-            var sql = "UPDATE File SET IsActive=0, ClosedDate=@ClosedDate, ClosedByUserId=@ClosedByUserId WHERE FileId=@fileId AND IsActive=1";
+            var sql = @"
+UPDATE File 
+SET IsActive=0, ClosedDate=@ClosedDate, ClosedByUserId=@ClosedByUserId 
+WHERE FileId=@fileId AND IsActive=1";
 
             _dbConnection.Execute(sql, new
             {

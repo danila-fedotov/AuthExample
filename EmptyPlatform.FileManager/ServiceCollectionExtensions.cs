@@ -10,6 +10,7 @@ namespace EmptyPlatform.FileManager
         {
             services.AddSingleton(sp => configuration);
             services.AddTransient<IDbRepository, DbRepository>();
+            services.AddTransient<IFileStorage, FileStorage>();
             services.AddTransient<IFileService, FileService>();
 
             return services;

@@ -18,7 +18,7 @@ namespace EmptyPlatform.Auth.Services
             _dbRepository = dbRepository;
         }
 
-        public void Create(User user, string actionNote)
+        public virtual void Create(User user, string actionNote)
         {
             user.UserId = Guid.NewGuid().ToString();
 

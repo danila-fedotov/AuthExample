@@ -2,7 +2,7 @@
 
 namespace EmptyPlatform.FileManager.Db
 {
-    internal interface IDbRepository : IDisposable
+    public interface IDbRepository : IDisposable
     {
         void CreateFile(File file);
 
@@ -10,8 +10,6 @@ namespace EmptyPlatform.FileManager.Db
 
         File GetFile(string contentType, long size, string hash);
 
-        void ForceRemoveFile(string fileId);
-     
         void RemoveFile(string fileId);
     }
 }

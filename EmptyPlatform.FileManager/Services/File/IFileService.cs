@@ -9,7 +9,7 @@ namespace EmptyPlatform.FileManager.Services
 
         Db.File Get(string fileId);
 
-        Stream Read(string fileId);
+        Stream Read(Db.File file);
 
         void Remove(string fileId);
     }

@@ -38,7 +38,7 @@ namespace EmptyPlatform.FileManager.Api.File
         {
             var file = _fileService.Get(fileId);
 
-            using var fileStream = _fileService.Read(file.SourceFileId ?? file.FileId);
+            using var fileStream = _fileService.Read(file);
 
             return File(fileStream, file.ContentType, file.FileName);
         }

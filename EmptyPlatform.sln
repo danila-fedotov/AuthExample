@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmptyPlatform.Auth", "Empty
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmptyPlatform.FileManager", "EmptyPlatform.FileManager\EmptyPlatform.FileManager.csproj", "{FFD9806F-85B1-4CA4-A1A0-9F69725C95F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4CB1E118-7B84-42DB-96C9-6E07B0D977F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManager.Tests", "Tests\FileManager.Tests\FileManager.Tests.csproj", "{5F36B149-AFAD-410D-AC7E-20BA8660A663}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,16 @@ Global
 		{FFD9806F-85B1-4CA4-A1A0-9F69725C95F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFD9806F-85B1-4CA4-A1A0-9F69725C95F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFD9806F-85B1-4CA4-A1A0-9F69725C95F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F36B149-AFAD-410D-AC7E-20BA8660A663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F36B149-AFAD-410D-AC7E-20BA8660A663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F36B149-AFAD-410D-AC7E-20BA8660A663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F36B149-AFAD-410D-AC7E-20BA8660A663}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F36B149-AFAD-410D-AC7E-20BA8660A663} = {4CB1E118-7B84-42DB-96C9-6E07B0D977F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {299CA64F-8C49-427C-AC6E-A942596082E4}
