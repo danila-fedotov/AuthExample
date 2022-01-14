@@ -1,4 +1,5 @@
 using EmptyPlatform.Auth;
+using EmptyPlatform.FileManager;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -74,6 +75,7 @@ X-Content-Type-Options Ц дл€ защиты от подмены MIME типов.
                 options.CustomSchemaIds(type => type.FullName);
             });
             services.AddAuth();
+            services.AddFileManager(_conf.Get<FileManagerConfiguration>());
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IDbConnection>((IServiceProvider sp) => new SqliteConnection(_conf.GetConnectionString("DefaultConnection")));

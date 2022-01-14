@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EmptyPlatform.Auth\EmptyPlatform.Auth.csproj" />
     <ProjectReference Include="..\EmptyPlatform.Fias\EmptyPlatform.Fias.csproj" />
+    <ProjectReference Include="..\EmptyPlatform.FileManager\EmptyPlatform.FileManager.csproj" />
   </ItemGroup>
 
 </Project>
