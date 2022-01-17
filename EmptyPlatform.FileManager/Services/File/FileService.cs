@@ -1,21 +1,56 @@
-﻿using EmptyPlatform.FileManager.Db;
+﻿using EmptyPlatform.FileManager.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Stream = System.IO.Stream;
 
 namespace EmptyPlatform.FileManager.Services
 {
     internal class FileService : IFileService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDbRepository _dbRepository;
         private readonly IFileStorage _fileStorage;
+        protected virtual string UserId => _httpContextAccessor.HttpContext.User.Identity.Name ?? "root";
 
-        public FileService(IDbRepository dbRepository,
+        public FileService(IHttpContextAccessor httpContextAccessor,
+            IDbRepository dbRepository,
             IFileStorage fileStorage)
         {
+            _httpContextAccessor = httpContextAccessor;
             _dbRepository = dbRepository;
             _fileStorage = fileStorage;
+        }
+
+        protected virtual async Task<PhysicalFile> SavePhysicalFileAsync(string contentType, long size, Stream fileStream)
+        {
+            var hash = GetFileHash(fileStream);
+            var actualPhysicalFile = _dbRepository.FindPhysicalFile(contentType, size, hash);
+
+            if (actualPhysicalFile is not null)
+            {
+                return actualPhysicalFile;
+            }
+
+            var physicalFile = new PhysicalFile()
+            {
+                PhysicalFileId = Guid.NewGuid().ToString(),
+                ContentType = contentType,
+                Size = size,
+                Hash = hash,
+                CreatedDate = DateTime.Now,
+                CreatedByUserId = UserId
+            };
+
+            using var transaction = _dbRepository.BeginTransaction();
+
+            _dbRepository.CreatePhysicalFile(physicalFile);
+            await _fileStorage.CreateAsync(physicalFile.PhysicalFileId, fileStream);
+
+            transaction.Commit();
+
+            return physicalFile;
         }
 
         protected virtual string GetFileHash(Stream fileStream)
@@ -24,63 +59,45 @@ namespace EmptyPlatform.FileManager.Services
 
             var hash = md5.ComputeHash(fileStream);
 
+            fileStream.Seek(0, System.IO.SeekOrigin.Begin);
+
             return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
         }
 
         public virtual async Task<string> CreateAsync(string fileName, string contentType, long size, Stream fileStream)
         {
-            var fileHash = GetFileHash(fileStream);
-            var sourseFile = _dbRepository.GetFile(contentType, size, fileHash);
-            var file = new Db.File
+            var physicalFile = await SavePhysicalFileAsync(contentType, size, fileStream);
+            var file = new File
             {
                 FileId = Guid.NewGuid().ToString(),
                 FileName = fileName,
-                SourceFileId = sourseFile?.FileId
+                PhysicalFileId = physicalFile.PhysicalFileId,
+                CreatedDate = DateTime.Now,
+                CreatedByUserId = UserId
             };
 
-            if (sourseFile is null)
-            {
-                file.ContentType = contentType;
-                file.Size = size;
-                file.Hash = fileHash;
-            }
-
             _dbRepository.CreateFile(file);
-
-            if (sourseFile is null)
-            {
-                try
-                {
-                    fileStream.Seek(0, SeekOrigin.Begin);
-                    await _fileStorage.WriteAsync(file.FileId, fileStream);
-                }
-                catch
-                {
-                    // TODO: rollback transaction
-                    throw;
-                }
-            }
 
             return file.FileId;
         }
 
-        public virtual Db.File Get(string fileId)
+        public virtual File GetOrDefault(string fileId)
         {
-            var file = _dbRepository.GetFile(fileId) ?? throw new ArgumentNullException("FileId", "A file is not found");
+            var file = _dbRepository.FindFile(fileId);
 
             return file;
         }
 
-        public virtual Stream Read(Db.File file)
+        public virtual Stream OpenRead(File file)
         {
-            var fileStream = _fileStorage.Read(file.SourceFileId ?? file.FileId);
+            var fileStream = _fileStorage.OpenRead(file.PhysicalFileId);
 
             return fileStream;
         }
 
-        public virtual void Remove(string fileId)
+        public virtual void Remove(File file)
         {
-            _dbRepository.RemoveFile(fileId);
+            _dbRepository.RemoveFile(file.FileId, UserId);
         }
     }
 }

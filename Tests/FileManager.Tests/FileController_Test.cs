@@ -1,39 +1,36 @@
+using EmptyPlatform.FileManager;
 using EmptyPlatform.FileManager.Api.File;
-using EmptyPlatform.FileManager.Db;
+using EmptyPlatform.FileManager.Entities;
 using EmptyPlatform.FileManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace FileManager.Tests
 {
     public class FileController_Test
     {
-        [Fact]
-        public async Task CreateAsync_Test()
+        [Theory]
+        [InlineData("FileId1", 405)]
+        [InlineData("FileId2", 200)]
+        public void Download_Test(string fileId, int statusCode)
         {
-            EmptyPlatform.FileManager.Db.File file = null;
-            var mockDbRepository = new Mock<IDbRepository>();
+            //var mockDbRepository = new Mock<IDbRepository>();
 
-            mockDbRepository.Setup(x => x.CreateFile(null)).Callback<EmptyPlatform.FileManager.Db.File>(x => file = x);
+            //mockDbRepository.Setup(x => x.FindFile(It.IsAny<string>()))
+            //    .Returns(fileId == "FileId2" ? new File() : null);
 
-            var mockFileStorage = new Mock<IFileStorage>();
+            //var mockFileStorage = new Mock<IFileStorage>();
 
-            mockFileStorage.Setup(x => x.WriteAsync(string.Empty, null))
-                .Returns((string fileName, Stream fileStream) =>
-                {
-                    return Task.Factory.StartNew(() => fileStream);
-                });
+            //mockFileStorage.Setup(x => x.OpenRead(It.IsAny<string>()))
+            //    .Returns(fileId == "FileId2" ? new System.IO.MemoryStream() : null);
 
-            var mockFileService = new Mock<IFileService>(mockDbRepository.Object, mockFileStorage.Object);
-            var controller = new FileController(mockFileService.Object);
-            var formFile = new TxtFormFile();
-            var result = await controller.CreateAsync(formFile);
-            var okResult = Assert.IsType<OkObjectResult>(result);
+            //var mockFileService = new Mock<FileService>(mockDbRepository.Object, mockFileStorage.Object);
+            //var controller = new FileController(mockFileService.Object);
+            //var result = controller.Download(fileId);
+            //var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
 
-            Assert.Equal(okResult?.Value, "");
+            //Assert.Equal(statusCode, statusCodeResult.StatusCode);
         }
     }
 }

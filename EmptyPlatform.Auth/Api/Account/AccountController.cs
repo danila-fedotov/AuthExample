@@ -41,9 +41,7 @@ namespace EmptyPlatform.Auth.Api.Account
                 return BadRequest(ModelState);
             }
 
-            var address = HttpContext.Connection.RemoteIpAddress.ToString();
-            var device = HttpContext.Request.Headers["User-Agent"].ToString();
-            var sessionId = _sessionService.Create(user.UserId, device, address);
+            var sessionId = _sessionService.Create(user.UserId);
             var claims = new List<Claim>()
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserId),

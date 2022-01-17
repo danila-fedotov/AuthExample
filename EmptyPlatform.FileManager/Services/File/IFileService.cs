@@ -1,5 +1,6 @@
-﻿using System.IO;
+﻿using EmptyPlatform.FileManager.Entities;
 using System.Threading.Tasks;
+using Stream = System.IO.Stream;
 
 namespace EmptyPlatform.FileManager.Services
 {
@@ -7,10 +8,10 @@ namespace EmptyPlatform.FileManager.Services
     {
         Task<string> CreateAsync(string fileName, string contentType, long size, Stream fileStream);
 
-        Db.File Get(string fileId);
+        File GetOrDefault(string fileId);
 
-        Stream Read(Db.File file);
+        Stream OpenRead(File file);
 
-        void Remove(string fileId);
+        void Remove(File file);
     }
 }

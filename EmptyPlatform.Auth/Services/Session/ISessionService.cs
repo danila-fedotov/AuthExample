@@ -4,12 +4,14 @@ namespace EmptyPlatform.Auth.Services
 {
     public interface ISessionService
     {
-        int Create(string userId, string device, string address);
+        int Create(string userId);
 
         Session Get(int sessionId);
 
         void Close(int sessionId);
 
         void Close(string userId);
+
+        bool Validate();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EmptyPlatform.Auth.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -11,11 +12,10 @@ namespace EmptyPlatform.Auth
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
 
-        public SwaggerDocumentFilter(IHttpContextAccessor httpContextAccessor,
-            IUserService userService)
+        public SwaggerDocumentFilter(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
-            _userService = userService;
+            _userService = httpContextAccessor.HttpContext.RequestServices.GetRequiredService<IUserService>();
         }
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)

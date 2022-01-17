@@ -1,20 +1,16 @@
 ﻿using System;
 
-namespace EmptyPlatform.FileManager.Db
+namespace EmptyPlatform.FileManager.Entities
 {
-    public class File
+    public class PhysicalFile
     {
-        public string FileId { get; set; }
-
-        public string FileName { get; set; }
+        public string PhysicalFileId { get; set; }
 
         public string ContentType { get; set; }
 
         public long Size { get; set; }
 
         public string Hash { get; set; }
-
-        public string SourceFileId { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

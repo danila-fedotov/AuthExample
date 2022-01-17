@@ -37,7 +37,6 @@ namespace EmptyPlatform.Web
             });
             services.AddControllers(configure =>
             {
-                configure.Filters.Add<AuthorizationFilter>();
                 configure.Filters.Add<ValidationFilter>();
             });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -75,10 +74,10 @@ X-Content-Type-Options Ц дл€ защиты от подмены MIME типов.
                 options.CustomSchemaIds(type => type.FullName);
             });
             services.AddAuth();
-            services.AddFileManager(_conf.Get<FileManagerConfiguration>());
+            services.AddFileManager(_conf.GetSection("FileManager").Get<FileManagerConfiguration>());
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<IDbConnection>((IServiceProvider sp) => new SqliteConnection(_conf.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IDbConnection>(sp => new SqliteConnection(_conf.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +94,7 @@ X-Content-Type-Options Ц дл€ защиты от подмены MIME типов.
             app.UseAuthorization();
             app.UseSwagger();
             app.UseSwaggerUI();
+            app.UseAuth();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

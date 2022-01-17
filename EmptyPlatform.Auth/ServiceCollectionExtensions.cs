@@ -8,8 +8,8 @@ namespace EmptyPlatform.Auth
     {
         public static IServiceCollection AddAuth(this IServiceCollection services)
         {
-            services.AddSingleton<ISessionService, SessionService>();
-            services.AddTransient<IDbRepository, DbRepository>();
+            services.AddScoped<IDbRepository, DbRepository>();
+            services.AddTransient<ISessionService, SessionService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
 
